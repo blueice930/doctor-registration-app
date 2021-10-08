@@ -67,3 +67,5 @@ node_modules/
 .firebaserc
 firestore.rules
 firestore.indexes.json
+build
+doc-private
