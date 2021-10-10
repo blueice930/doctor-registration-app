@@ -5,7 +5,8 @@
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
+    "start": "firebase emulators:start --import=./emulators.backup --export-on-exit",
+    "export": "firebase emulators:export ./emulators.backup",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },

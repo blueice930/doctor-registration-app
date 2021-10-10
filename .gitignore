@@ -69,3 +69,5 @@ firestore.rules
 firestore.indexes.json
 build
 doc-private
+.env.local
+functions/emulators.backup

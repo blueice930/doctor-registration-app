@@ -1,0 +1,39 @@
+import React, { FC } from 'react';
+import {
+  Redirect, Route, Switch,
+} from 'react-router-dom';
+
+import { useAuth } from 'src/contexts/AuthContext';
+import App from 'src/App';
+import PageNotFound from '../pages/404';
+import PrivateRoute from './PrivateRoute';
+import Login from '../pages/Login';
+import Routes from './Routes';
+
+const AppRouter: FC = () => {
+  const { currUser } = useAuth();
+
+  return (
+    <div className="App">
+      {/* <Navbar /> */}
+      <Switch>
+        <Route
+          exact
+          path={Routes.root}
+          component={App}
+        />
+        <Route
+          exact
+          path={Routes.login}
+          render={() => (currUser
+            ? (
+              <Redirect to={{ pathname: Routes.admin }} />
+            ) : <Login />)}
+        />
+        <Route component={PageNotFound} />
+      </Switch>
+    </div>
+  );
+};
+
+export default AppRouter;
