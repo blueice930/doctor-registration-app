@@ -24,7 +24,7 @@ const CONSULTANTS = [
 const STEPS = ['Read Disclaimer', 'Select Health Consultant', 'Fill in Information'];
 
 const App = () => {
-  const [activeStep, setActiveStep] = React.useState(2);
+  const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
     if (activeStep > 2) {
