@@ -5,6 +5,7 @@ import {
 
 import { useAuth } from 'src/contexts/AuthContext';
 import App from 'src/App';
+import AdminLayout from 'src/layouts/Admin';
 import PageNotFound from '../pages/404';
 import PrivateRoute from './PrivateRoute';
 import Login from '../pages/Login';
@@ -30,6 +31,11 @@ const AppRouter: FC = () => {
               <Redirect to={{ pathname: Routes.admin }} />
             ) : <Login />)}
         />
+        <PrivateRoute
+          path="/admin"
+          component={AdminLayout}
+        />
+
         <Route component={PageNotFound} />
       </Switch>
     </div>

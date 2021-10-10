@@ -20,7 +20,7 @@
       "typescript"
   ],
   "rules": {
-      "react/jsx-filename-extension": [2, { "extensions": [".tsx", ".ts"] }],
+      "react/jsx-filename-extension": [2, { "extensions": [".tsx", ".ts", ".jsx", ".js"] }],
       "react/jsx-props-no-spreading": [1],
       "@typescript-eslint/no-unused-vars": [1]
   }

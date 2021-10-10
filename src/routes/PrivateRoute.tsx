@@ -9,13 +9,14 @@ export interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps | RouteProps) => {
-  const { currUser } = useAuth();
+  // const { currUser } = useAuth();
+  const currUser = {};
 
   return (
     <Route
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
-      render={({ location }) => (currUser
+      render={({ location }) => (true
         ? <Component />
         : <Redirect to={{ pathname: Routes.login, state: { from: location } }} />)}
     />

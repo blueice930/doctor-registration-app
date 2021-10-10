@@ -4,9 +4,7 @@ import { User } from 'src/types/user';
 import Loading from 'src/components/Loading';
 import { isPublicRoute } from 'src/routes/Routes';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import {
-  auth,
-} from '../firebase';
+import { auth } from 'src/firebase';
 
 const AuthContext = React.createContext<any>({});
 
@@ -34,8 +32,6 @@ export const AuthProvider = ({ children } : any) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log('user', user);
-      } else {
-        console.log('no user', user);
       }
       setLoading(false);
     });
