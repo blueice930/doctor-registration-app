@@ -71,3 +71,5 @@ build
 doc-private
 .env.local
 functions/emulators.backup
+functions/firebase-export-1633947208495IY3gCy/firestore_export/auth_export
+functions/firebase-export-1633947208495IY3gCy/firestore_export

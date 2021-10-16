@@ -6,6 +6,7 @@ import {
 import { useAuth } from 'src/contexts/AuthContext';
 import App from 'src/App';
 import AdminLayout from 'src/layouts/Admin';
+import { isEmpty } from 'lodash';
 import PageNotFound from '../pages/404';
 import PrivateRoute from './PrivateRoute';
 import Login from '../pages/Login';
@@ -26,7 +27,7 @@ const AppRouter: FC = () => {
         <Route
           exact
           path={Routes.login}
-          render={() => (currUser
+          render={() => (!isEmpty(currUser)
             ? (
               <Redirect to={{ pathname: Routes.admin }} />
             ) : <Login />)}

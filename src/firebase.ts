@@ -22,10 +22,25 @@ connectFunctionsEmulator(functions, 'localhost', 5001);
 connectAuthEmulator(auth, 'http://localhost:9099');
 ///
 
-const makeReservation = httpsCallable(functions, 'reservation-makeReservation');
+const createReservation = httpsCallable(functions, 'reservation-createReservation');
+const updateReservation = httpsCallable(functions, 'reservation-updateReservation');
+const deleteReservation = httpsCallable(functions, 'reservation-deleteReservation');
+const getReservations = httpsCallable(functions, 'reservation-getReservations');
+
+const createConsultant = httpsCallable(functions, 'consultant-createConsultant');
+const getConsultants = httpsCallable(functions, 'consultant-getConsultants');
+const updateConsultant = httpsCallable(functions, 'consultant-updateConsultant');
+const deleteConsultant = httpsCallable(functions, 'consultant-deleteConsultant');
 
 export {
-  makeReservation,
+  createReservation,
+  updateReservation,
+  deleteReservation,
+  getReservations,
+  createConsultant,
+  getConsultants,
+  updateConsultant,
+  deleteConsultant,
 };
 
 export default app;

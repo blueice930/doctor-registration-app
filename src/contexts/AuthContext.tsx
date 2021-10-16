@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { User } from 'src/types/user';
 import Loading from 'src/components/Loading';
 import { isPublicRoute } from 'src/routes/Routes';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
@@ -11,7 +10,7 @@ const AuthContext = React.createContext<any>({});
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children } : any) => {
-  const [currUser, setCurrUser] = useState<User>();
+  const [currUser, setCurrUser] = useState<any>();
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
 
@@ -30,9 +29,7 @@ export const AuthProvider = ({ children } : any) => {
       setLoading(false);
     }
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('user', user);
-      }
+      setCurrUser(user);
       setLoading(false);
     });
   }, []);

@@ -57,7 +57,7 @@ const RegForm = () => {
   const currentDate = useMemo(() => new Date(), []);
 
   const disableDate = (day: Date) => day.getDay() % 2 !== 0;
-  const disableTime = (timeValue: number, clockType: 'hours' | 'minutes' | 'seconds') => (clockType === 'minutes' && timeValue % 5 !== 0);
+  const disableTime = (timeValue: number, clockType: 'hours' | 'minutes' | 'seconds') => (clockType === 'minutes' && timeValue % 15 !== 0);
 
   const handleChange = (newValue: Date | null) => {
     setDatetime(newValue);

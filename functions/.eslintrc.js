@@ -25,8 +25,8 @@ module.exports = {
     'import',
   ],
   rules: {
-    'quotes': [2, 'single', {'allowTemplateLiterals': true}],
     'object-curly-spacing': ['error', 'never'],
+    'quotes': [2, 'single', {'allowTemplateLiterals': true}],
     'no-unused-vars': [1],
     'import/no-unresolved': [1],
     'camelcase': [0],

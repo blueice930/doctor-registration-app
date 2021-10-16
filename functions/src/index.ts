@@ -1,8 +1,8 @@
 import initFirebase from './helpers/initFirebase';
 import * as reservationHandler from './handlers/reservation';
-import * as adminHandler from './handlers/admin';
+import * as consultantHandler from './handlers/consultant';
 
 initFirebase();
 
-export const admin = adminHandler;
+export const consultant = consultantHandler;
 export const reservation = reservationHandler;

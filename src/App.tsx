@@ -7,6 +7,7 @@ import ConsultantSelect from './components/registrations/ConsultantSelect';
 import Disclaimer from './components/registrations/Disclaimer';
 import RegForm from './components/registrations/RegForm';
 import Thankyou from './components/registrations/Thankyou';
+import { FormProvider } from './contexts/FormContext';
 
 const Container = styled.div`
   margin: auto;
@@ -86,7 +87,9 @@ const App = () => {
             );
           })}
         </Stepper>
-        {renderStepComponent()}
+        <FormProvider>
+          {renderStepComponent()}
+        </FormProvider>
         <React.Fragment>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button

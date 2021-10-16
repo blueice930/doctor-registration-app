@@ -22,10 +22,12 @@ import {
   Navbar, Container, Nav, Dropdown, Button,
 } from 'react-bootstrap';
 
+import { useAuth } from 'src/contexts/AuthContext';
 import { dashboardRoutes as routes } from '../../routes/Routes';
 
 function Header() {
   const location = useLocation();
+  const { logout } = useAuth();
   const mobileSidebarToggle = (e) => {
     e.preventDefault();
     document.documentElement.classList.toggle('nav-open');
@@ -76,7 +78,7 @@ function Header() {
               <Nav.Link
                 className="m-0"
                 href="#pablo"
-                onClick={(e) => e.preventDefault()}
+                onClick={logout}
               >
                 <span className="no-icon">Log out</span>
               </Nav.Link>

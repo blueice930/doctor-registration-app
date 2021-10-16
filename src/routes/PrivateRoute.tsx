@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 
@@ -9,14 +10,13 @@ export interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps | RouteProps) => {
-  // const { currUser } = useAuth();
-  const currUser = {};
+  const { currUser } = useAuth();
 
   return (
     <Route
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
-      render={({ location }) => (true
+      render={({ location }) => (!isEmpty(currUser)
         ? <Component />
         : <Redirect to={{ pathname: Routes.login, state: { from: location } }} />)}
     />
