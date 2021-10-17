@@ -1,5 +1,5 @@
 import Dashboard from 'src/views/Dashboard';
-import UserProfile from 'src/views/UserProfile';
+import ConsultantView from 'src/views/ConsultantView';
 import TableList from 'src/views/TableList';
 import Notifications from 'src/views/Notifications';
 import Upgrade from 'src/views/Upgrade';
@@ -37,7 +37,7 @@ export const dashboardRoutes = [
     path: '/consultant',
     name: 'Consultant Info',
     icon: 'nc-icon nc-circle-09',
-    component: UserProfile,
+    component: ConsultantView,
     layout: '/admin',
   },
   {

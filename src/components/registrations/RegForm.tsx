@@ -1,23 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import {
   FormControlLabel, Radio, RadioGroup, TextField, Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import {
-  MobileDatePicker, TimePicker, LocalizationProvider,
-} from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import styled from '@emotion/styled';
-import { add } from 'date-fns';
 
-const useStyles = makeStyles({
-  input: {
-    width: 400,
-    margin: 20,
-  },
-});
+import styled from '@emotion/styled';
+import { useForm } from 'src/contexts/FormContext';
 
 const Container = styled.div`
   display: flex;
@@ -36,9 +25,7 @@ const Container = styled.div`
     width: 400px;
     text-align: left;
   }
-  .date {
-    width: 400px;
-  }
+  
 `;
 
 const StyledTextField = styled(TextField)`
@@ -46,22 +33,9 @@ const StyledTextField = styled(TextField)`
 `;
 
 const RegForm = () => {
-  const [name, setName] = useState('');
-  const [nameZH, setNameZH] = useState('');
-  const [phone, setPhone] = useState('');
-  const [datetime, setDatetime] = React.useState<Date | null>(
-    new Date(),
-  );
-  const classes = useStyles();
-
-  const currentDate = useMemo(() => new Date(), []);
-
-  const disableDate = (day: Date) => day.getDay() % 2 !== 0;
-  const disableTime = (timeValue: number, clockType: 'hours' | 'minutes' | 'seconds') => (clockType === 'minutes' && timeValue % 15 !== 0);
-
-  const handleChange = (newValue: Date | null) => {
-    setDatetime(newValue);
-  };
+  const {
+    setpatientName, setpatientNameCN, setpatientMemberId, setisFirstVisit, setpatientPhone,
+  } = useForm();
 
   return (
     <Container>
@@ -71,6 +45,7 @@ const RegForm = () => {
         required
         label="English Name"
         variant="outlined"
+        onChange={(e: any) => setpatientName(e.target.value)}
       />
       <StyledTextField
         sx={{ width: 400 }}
@@ -78,14 +53,15 @@ const RegForm = () => {
         required
         label="Chinese Name"
         variant="outlined"
+        onChange={(e: any) => setpatientNameCN(e.target.value)}
       />
       <PhoneInput
         inputProps={{ name: 'phone', required: true }}
         placeholder="Enter phone number"
-        onChange={() => setPhone('1321123')}
         country='sg'
         inputClass='phone-input'
         containerClass='phone-container'
+        onChange={(e: any) => setpatientPhone(e.target.value)}
       />
       <div className="label">
         <Typography>Is it your first visit?</Typography>
@@ -94,9 +70,10 @@ const RegForm = () => {
           aria-label="first-time"
           defaultValue="yes"
           name="radio-buttons-group"
+          onChange={(e: any) => setisFirstVisit(e.target.value)}
           >
-          <FormControlLabel sx={{ mr: 15 }} value="yes" control={<Radio />} label="Yes" />
-          <FormControlLabel value="no" control={<Radio />} label="No" />
+          <FormControlLabel sx={{ mr: 15 }} value={true} control={<Radio />} label="Yes" />
+          <FormControlLabel value={false} control={<Radio />} label="No" />
         </RadioGroup>
       </div>
       <StyledTextField
@@ -104,31 +81,8 @@ const RegForm = () => {
         id="member-id"
         label="Member Id (Optional)"
         variant="outlined"
+        onChange={(e: any) => setpatientMemberId(e.target.value)}
       />
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <MobileDatePicker
-          label="Date"
-          inputFormat="yyyy/MM/dd"
-          minDate={currentDate}
-          maxDate={add(currentDate, { months: 2 })}
-          shouldDisableDate={disableDate}
-          value={datetime}
-          defaultCalendarMonth={currentDate}
-          onChange={handleChange}
-          InputProps={{ required: true }}
-          renderInput={(params) => <TextField className={classes.input} {...params} />}
-        />
-        <TimePicker
-          label="Start Time"
-          value={datetime}
-          onChange={handleChange}
-          shouldDisableTime={disableTime}
-          minTime={new Date(currentDate.setHours(9))}
-          maxTime={new Date(currentDate.setHours(18))}
-          InputProps={{ required: true }}
-          renderInput={(params) => <TextField className={classes.input} {...params} />}
-        />
-      </LocalizationProvider>
     </Container>
   );
 };

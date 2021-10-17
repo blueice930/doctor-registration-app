@@ -14,12 +14,12 @@ const StyledDisclaimer = styled.div`
   }
   .terms {
     font-size: 20px;
-    line-height: 1.5
+    line-height: 1.5;
   }
 `;
 
 const HTML = `
-<ol className="terms">
+<ol>
   <li>Only members of Global Ginseng are eligible to make appointment for health consultation.</li>
   <li> No walk-ins will be accepted.</li>
   <li>Once your appointment is successfully made, please screenshot the appointment details and show it to the staff for verification on your appointment date.</li>

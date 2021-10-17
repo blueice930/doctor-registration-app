@@ -7,25 +7,21 @@ import {FunctionResponse} from '../../helpers/types';
 import {Consultant} from './types';
 
 const getConsultantsFn = async (data: any, context: CallableContext) => {
-  if (!context.auth) {
-    // Throwing an HttpsError cause authentication failed.
-    throw new https.HttpsError('unauthenticated',
-        'You are currently unauthenticated', 'Action failed');
-  }
-
   const consultants: Consultant[] = [];
   const db = firestore();
   const consultantRef = db.collection('consultants');
 
   try {
-    const consultantSnapshot = await consultantRef
-        .orderBy('id', 'asc')
-        .get();
+    const query = context.auth ?
+    consultantRef.orderBy('id', 'asc') :
+    consultantRef.orderBy('id', 'asc').where('enabled', '==', true);
+    const consultantSnapshot = await query.get();
     consultantSnapshot.forEach((consulData) => {
       const data = consulData.data();
       const consultant = {
         id: data?.id,
         name: data?.name,
+        enabled: data?.enabled,
         nameCN: data?.nameCN,
         email: data?.email,
         phone: data?.phone,
@@ -60,6 +56,7 @@ const updateConsultantFn = async (data: any, context: CallableContext) => {
   const email = data?.email;
   const phone = data?.phone;
   const timeslots = data?.timeslots;
+  const enabled = data?.enabled;
 
   const db = firestore();
   const consultantRef = db.collection('consultants').doc(id);
@@ -69,6 +66,7 @@ const updateConsultantFn = async (data: any, context: CallableContext) => {
     email,
     phone,
     timeslots,
+    enabled,
   });
 
   const response: FunctionResponse = {
@@ -114,6 +112,7 @@ const createConsultantFn = async (data: any, context: CallableContext) => {
   const consultant: Consultant = {
     id,
     name,
+    enabled: true,
     nameCN,
     email,
     phone,

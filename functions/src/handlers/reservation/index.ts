@@ -16,7 +16,9 @@ const createReservationFn = async (data: any, context: CallableContext) => {
   const isFirstVisit = data?.isFirstVisit || true;
   const patientPhone = data?.patientPhone;
   const date = data?.date;
-  const time = data?.time;
+  const startTime = data?.startTime;
+  const endTime = data?.endTime;
+  const duration = data?.duration;
   const createdAt = firestore.Timestamp.now().toMillis();
 
   const reservation: Reservation = {
@@ -28,7 +30,9 @@ const createReservationFn = async (data: any, context: CallableContext) => {
     isFirstVisit,
     patientPhone,
     date,
-    time,
+    startTime,
+    endTime,
+    duration,
     createdAt,
     updatedAt: createdAt,
   };
@@ -136,7 +140,9 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
         isFirstVisit: data?.isFirstVisit,
         patientPhone: data?.patientPhone,
         date: data?.date,
-        time: data?.time,
+        startTime: data?.startTime,
+        endTime: data?.endTime,
+        duration: data?.duration,
         createdAt: data?.createdAt,
         updatedAt: data?.updatedAt,
       };
@@ -155,16 +161,28 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
   return response;
 };
 
+const getTimeslotsFn = async (data: any, context: CallableContext) => {
+  const timeslots: string[] = [];
+  const response: FunctionResponse = {
+    success: true,
+    data: timeslots,
+  };
+  return response;
+};
+
+
 initFirebase();
 
 const createReservation = functions.onCall(createReservationFn);
 const getReservations = functions.onCall(getReservationsFn);
 const updateReservation = functions.onCall(updateReservationFn);
 const deleteReservation = functions.onCall(deleteReservationFn);
+const getTimeslots = functions.onCall(getTimeslotsFn);
 
 export {
   createReservation,
   getReservations,
   updateReservation,
   deleteReservation,
+  getTimeslots,
 };

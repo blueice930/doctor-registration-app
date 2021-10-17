@@ -15,9 +15,11 @@
 * The above copyright notice and this permission
 notice shall be included in all copies or substantial portions of the Software.
 */
+
 import React, { Component } from 'react';
 import { useLocation, Route, Switch } from 'react-router-dom';
 
+import { ConsultantProvider } from 'src/contexts/ConsultantContext';
 import AdminNavbar from '../components/Navbars/AdminNavbar';
 import Footer from '../components/Footer/Footer';
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -64,7 +66,9 @@ function Admin() {
         <div className="main-panel" ref={mainPanel}>
           <AdminNavbar />
           <div className="content">
+            <ConsultantProvider>
             <Switch>{getRoutes(dashboardRoutes)}</Switch>
+            </ConsultantProvider>
           </div>
           <Footer />
         </div>

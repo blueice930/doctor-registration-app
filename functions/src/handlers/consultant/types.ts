@@ -1,25 +1,27 @@
 export interface Consultant {
   id: string,
+  enabled?: boolean,
   name: string,
   nameCN: string,
   email?: string,
   phone: string,
-  timeslots: TimeSlot[],
+  timeslots: TimeSlot,
 }
 
 export interface TimeSlot {
-  weekday: Weekday,
+  id: number,
+  day: Day,
   duration: number,
   start: string,
   end: string,
 }
 
-export enum Weekday {
-  MON='MON',
-  TUE='TUE',
-  WED='WED',
-  THU='THU',
-  FRI='FRI',
-  SAT='SAT',
-  SUN='SUN',
+export enum Day {
+  MON=1,
+  TUE=2,
+  WED=3,
+  THU=4,
+  FRI=5,
+  SAT=6,
+  SUN=0,
 }

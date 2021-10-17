@@ -7,7 +7,9 @@ export interface Reservation {
   isFirstVisit: boolean,
   patientPhone: string,
   date: string,
-  time: string,
+  startTime: string,
+  endTime: string,
+  duration: number,
   createdAt: number,
   updatedAt: number,
 }
