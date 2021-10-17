@@ -10,7 +10,7 @@ export interface Consultant {
 
 export interface TimeSlot {
   id: number,
-  day: Day,
+  day: Day[],
   duration: number,
   start: string,
   end: string,

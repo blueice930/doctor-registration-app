@@ -61,7 +61,7 @@ const RegForm = () => {
         country='sg'
         inputClass='phone-input'
         containerClass='phone-container'
-        onChange={(e: any) => setpatientPhone(e.target.value)}
+        onChange={(phone) => setpatientPhone(phone)}
       />
       <div className="label">
         <Typography>Is it your first visit?</Typography>

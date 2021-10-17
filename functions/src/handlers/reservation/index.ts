@@ -1,5 +1,6 @@
 import {firestore} from 'firebase-admin';
 import {CallableContext} from 'firebase-functions/v1/https';
+import {padStart, parseInt} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import initFirebase from '../../helpers/initFirebase';
 import {functions, https} from '../../helpers/initFirebaseFunctions';
@@ -17,7 +18,6 @@ const createReservationFn = async (data: any, context: CallableContext) => {
   const patientPhone = data?.patientPhone;
   const date = data?.date;
   const startTime = data?.startTime;
-  const endTime = data?.endTime;
   const duration = data?.duration;
   const createdAt = firestore.Timestamp.now().toMillis();
 
@@ -31,7 +31,6 @@ const createReservationFn = async (data: any, context: CallableContext) => {
     patientPhone,
     date,
     startTime,
-    endTime,
     duration,
     createdAt,
     updatedAt: createdAt,
@@ -58,14 +57,14 @@ const updateReservationFn = async (data: any, context: CallableContext) => {
 
   const resUid = data?.resUid;
   const consultantId = data?.consultantId;
-  const patientName = data?.name;
-  const patientNameCN = data?.nameCN;
-  const patientMemberId = data?.memberId || '';
-  const isFirstVisit = data?.isFirstVisit || true;
-  const patientPhone = data?.phone;
+  const patientName = data?.patientName;
+  const patientNameCN = data?.patientNameCN;
+  const patientMemberId = data?.patientMemberId || '';
+  const patientPhone = data?.patientPhone;
   const date = data?.date;
-  const time = data?.time;
+  const startTime = data?.startTime;
   const updatedAt = firestore.Timestamp.now().toMillis();
+  // const isFirstVisit = data?.isFirstVisit;
 
   const db = firestore();
   const reservationRef = db.collection('reservations').doc(resUid);
@@ -74,11 +73,11 @@ const updateReservationFn = async (data: any, context: CallableContext) => {
     patientName,
     patientNameCN,
     patientMemberId,
-    isFirstVisit,
     patientPhone,
     date,
-    time,
+    startTime,
     updatedAt,
+    // isFirstVisit,
   });
 
   const response: FunctionResponse = {
@@ -141,7 +140,6 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
         patientPhone: data?.patientPhone,
         date: data?.date,
         startTime: data?.startTime,
-        endTime: data?.endTime,
         duration: data?.duration,
         createdAt: data?.createdAt,
         updatedAt: data?.updatedAt,
@@ -154,6 +152,8 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
           'Error getting documents', e?.message);
     }
   }
+  console.log(`reservations`, reservations);
+
   const response: FunctionResponse = {
     success: true,
     data: reservations,
@@ -162,10 +162,59 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
 };
 
 const getTimeslotsFn = async (data: any, context: CallableContext) => {
-  const timeslots: string[] = [];
+  const date = data?.date;
+  const consultantId = data?.consultantId;
+
+  if (!(date&&consultantId)) {
+    return {
+      success: false,
+      data: null,
+    };
+  }
+  console.log(`date`, date);
+  const db = firestore();
+  const consultantSnapshot = await db.collection('consultants')
+      .doc(consultantId).get();
+
+  const reservationRef = db.collection('reservations');
+  const reservationSnapshot = await reservationRef
+      .where('date', '==', date).get();
+
+  const availableSlots: string[] = [];
+  const occupiedSlots: string[] = [];
+  reservationSnapshot.forEach((reser) => {
+    occupiedSlots.push(reser.data().startTime);
+  });
+
+  const timeslots = consultantSnapshot.data()?.timeslots;
+
+  const start = timeslots?.start;
+  const end = timeslots?.end;
+  const duration = timeslots?.duration;
+
+  const [startHStr, startMStr] = start?.split(':');
+  let startH = parseInt(startHStr);
+  let startM = parseInt(startMStr);
+  const [endHStr, endMStr] = end?.split(':');
+  const endH = parseInt(endHStr);
+  const endM = parseInt(endMStr);
+  while (endH > startH || (endH == startH && endM > startM)) {
+    if (startM >= 60) {
+      startH += 1;
+      startM -=60;
+    }
+    // eslint-disable-next-line max-len
+    availableSlots.push(`${padStart(startH.toString(), 2, '0')}:${padStart(startM.toString(), 2, '0')}`);
+    startM += duration;
+  }
+
+  console.log(`availableSlots`, availableSlots);
+  console.log(`occupiedSlots`, occupiedSlots);
+
+  const result = availableSlots.filter((ts) => !occupiedSlots.includes(ts));
   const response: FunctionResponse = {
     success: true,
-    data: timeslots,
+    data: result,
   };
   return response;
 };

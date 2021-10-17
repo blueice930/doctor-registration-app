@@ -5,11 +5,12 @@ import {
   Badge, Button,  Card,  Form,  Navbar,  Nav,  Container,  Row,  Col, Modal,
 } from "react-bootstrap";
 import {
-  Backdrop, CircularProgress, Table, TableRow, TableCell, TableHead, TableBody, TableContainer, Paper, Switch,
+  Backdrop, CircularProgress, Table, TableRow, TableCell, TableHead,
+  TableBody, TableContainer, Paper, Switch, InputLabel, Select, MenuItem, OutlinedInput, Checkbox, ListItemText
 } from "@mui/material";
 
 import styled from 'styled-components';
-import {range, padStart} from 'lodash';
+import {range, padStart, isEmpty} from 'lodash';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import shortid from 'shortid';
@@ -49,6 +50,36 @@ const StyledModal = styled(Modal)`
   }
 `;
 
+const getDayText = (day) => {
+  switch (day) {
+    case 0:
+      return 'Sun'
+    case 1:
+      return 'Mon'
+    case 2:
+      return 'Tue'
+    case 3:
+      return 'Wed'
+    case 4:
+      return 'Thu'
+    case 5:
+      return 'Fri'
+    case 6:
+      return 'Sat'
+    default:
+      return '';
+  }
+}
+
+const renderTimeOptions = () => {
+  const res = [];
+  range(7, 19).map((h) => {
+      res.push(<MenuItem value={`${padStart(h, 2, '0')}:00`}>{`${padStart(h, 2, '0')}:00`}</MenuItem>)
+      res.push(<MenuItem value={`${padStart(h, 2, '0')}:30`}>{`${padStart(h, 2, '0')}:30`}</MenuItem>)
+  })
+  return res;
+}
+
 function ConsultantView() {
   const [modalShow, setModalShow] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
@@ -60,8 +91,8 @@ function ConsultantView() {
   const [editemail, seteditEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [editphone, seteditPhone] = useState('');
-  const [timeslots, setTimeslots] = useState([{id: 0, day: Day.WD, duration: 15, start: '08:00', end: '18:00'}]);
-  const [edittimeslots, seteditTimeslots] = useState([{id: 0, day: Day.WD, duration: 15, start: '08:00', end: '18:00'}]);
+  const [timeslots, setTimeslots] = useState({day: [1,2,3,4,5], duration: 15, start: '08:00', end: '18:00'});
+  const [edittimeslots, seteditTimeslots] = useState({day: [1,2,3,4,5], duration: 15, start: '08:00', end: '18:00'});
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(false);
   const [deleting, setdeleting] = useState(false);
@@ -75,7 +106,7 @@ function ConsultantView() {
     setNameCN('')
     setEmail('')
     setPhone('')
-    setTimeslots([{id: 0, day: Day.WD, duration: 15, start: '08:00', end: '18:00'}]);
+    setTimeslots({day: [1,2,3,4,5], duration: 15, start: '08:00', end: '18:00'});
     setAdding(false);
     setModalShow(false);
   }
@@ -104,7 +135,7 @@ function ConsultantView() {
     seteditNameCN('')
     seteditEmail('')
     seteditPhone('')
-    seteditTimeslots([{id: 0, day: Day.WD, duration: 15, start: '08:00', end: '18:00'}]);
+    seteditTimeslots({day: [1,2,3,4,5], duration: 15, start: '08:00', end: '18:00'});
     setEditing(false);
     setEditModalShow(false);
   }
@@ -131,42 +162,20 @@ function ConsultantView() {
   const handleModalClose = () => setModalShow(false);
   const handleModalShow = () => setModalShow(true);
 
-  const addTimeslots = () => {
-    if (timeslots.length < 7 ) {
-      const newSlot = {id: shortid.generate(), day: Day.WD, duration: 15, start: '08:00', end: '18:00'};
-      setTimeslots([...timeslots, newSlot]);
+  const updateTimeslots = (field, value) => {
+    if (!isEmpty(timeslots)) {
+      const temp = {...timeslots};
+      temp[field] = value
+      setTimeslots(temp);
     }
   }
 
-  const removeTimeslots = (id) => {
-    const temp = timeslots.filter((ts) => ts.id !== id);
-    setTimeslots(temp);
-  }
-
-  const updateTimeslots = (id, field, value) => {
-    const temp = [...timeslots];
-    const ts = temp.find((ts) => ts.id === id);
-    ts[field] = value
-    setTimeslots(temp);
-  }
-
-  const addEditTimeslots = () => {
-    if (edittimeslots.length < 7 ) {
-      const newSlot = {id: shortid.generate(), day: Day.WD, duration: 15, start: '08:00', end: '18:00'};
-      seteditTimeslots([...edittimeslots, newSlot]);
+  const updateEditTimeslots = (field, value) => {
+    if (!isEmpty(edittimeslots)) {
+      const temp = {...edittimeslots};
+      temp[field] = value
+      seteditTimeslots(temp);
     }
-  }
-
-  const removeEditTimeslots = (id) => {
-    const temp = edittimeslots.filter((ts) => ts.id !== id);
-    seteditTimeslots(temp);
-  }
-
-  const updateEditTimeslots = (id, field, value) => {
-    const temp = [...edittimeslots];
-    const ts = temp.find((ts) => ts.id === id);
-    ts[field] = value
-    seteditTimeslots(temp);
   }
 
   const handleDelete = async (id) => {
@@ -215,61 +224,72 @@ function ConsultantView() {
           <div className="title">
           Time slots
           </div>
-          {edittimeslots?.map((ts) => (
-            <div key={ts.id}>
-              <Form.Label>Duration</Form.Label>
-              <Form.Control required as="select" defaultValue={ts.duration} onChange={(e) => updateEditTimeslots(ts.id, 'duration', e.target.value)}>
-                <option value={10}>10 minutes</option>
-                <option value={15}>15 minutes</option>
-                <option value={20}>20 minutes</option>
-                <option value={30}>30 minutes</option>
-                <option value={60}>1 hour</option>
-              </Form.Control>
-              <Form.Label>Day</Form.Label>
-              <Form.Control required as="select" value={ts.day} onChange={(e) => updateEditTimeslots(ts.id, 'day', e.target.value)}>
-                <option value={Day.WD}>Weekdays</option>
-                <option value={Day.ALL}>All week</option>
-                <option value={Day.MON}>Monday</option>
-                <option value={Day.TUE}>Tuesday</option>
-                <option value={Day.WED}>Wednesday</option>
-                <option value={Day.THU}>Thursday</option>
-                <option value={Day.FRI}>Friday</option>
-                <option value={Day.SAT}>Saturday</option>
-                <option value={Day.SUN}>Sunday</option>
-              </Form.Control>
-              <Form.Label>Start time</Form.Label>
-              <Form.Control required as="select" value={ts.start} onChange={(e) => updateEditTimeslots(ts.id, 'start', e.target.value)}>
-                {range(7, 19).map((h) => (
-                  <>
-                    <option value={`${padStart(h, 2, '0')}:00`}>{`${padStart(h, 2, '0')}:00`}</option>
-                    <option value={`${padStart(h, 2, '0')}:15`}>{`${padStart(h, 2, '0')}:15`}</option>
-                    <option value={`${padStart(h, 2, '0')}:30`}>{`${padStart(h, 2, '0')}:30`}</option>
-                    <option value={`${padStart(h, 2, '0')}:45`}>{`${padStart(h, 2, '0')}:45`}</option>
-                  </>
-                ))}
-              </Form.Control>
-              <Form.Label>End time</Form.Label>
-              <Form.Control required as="select" value={ts.end} onChange={(e) => updateEditTimeslots(ts.id, 'end', e.target.value)}>
-                {range(7, 19).map((h) => (
-                  <>
-                    <option value={`${padStart(h, 2, '0')}:00`}>{`${padStart(h, 2, '0')}:00`}</option>
-                    <option value={`${padStart(h, 2, '0')}:15`}>{`${padStart(h, 2, '0')}:15`}</option>
-                    <option value={`${padStart(h, 2, '0')}:30`}>{`${padStart(h, 2, '0')}:30`}</option>
-                    <option value={`${padStart(h, 2, '0')}:45`}>{`${padStart(h, 2, '0')}:45`}</option>
-                  </>
-                ))}
-              </Form.Control>
-              <StyledDeleteTimeSlotBtn variant="danger" className="btn-fill" onClick={() => removeEditTimeslots(ts.id)}>
-                <FontAwesomeIcon color="white" icon={faMinusCircle} />
-                &nbsp; Delete slot
-              </StyledDeleteTimeSlotBtn>
-              <hr />
+          <div>
+            <div>
+              <InputLabel id="edit-duration-select-required-label">Duration *</InputLabel>
+              <Select
+                labelId="eidtduration-select-required-label"
+                id="duration-select-required"
+                value={edittimeslots?.duration || 15}
+                label="Duration *"
+                onChange={(e) => updateEditTimeslots('duration', e.target.value)}
+                sx={{width: '100%'}}
+                displayEmpty
+              >
+                <MenuItem value={10}>10 minutes</MenuItem>
+                <MenuItem value={15}>15 minutes</MenuItem>
+                <MenuItem value={20}>20 minutes</MenuItem>
+                <MenuItem value={30}>30 minutes</MenuItem>
+                <MenuItem value={60}>1 hour</MenuItem>
+              </Select>
             </div>
-          ))}
-          <StyledAddTimeSlotBtn disabled={false} variant="info" className="btn-fill" onClick={() => {addEditTimeslots();}}>
-            <FontAwesomeIcon color="white" icon={faPlusCircle} />
-            &nbsp; Add new slot
-          </StyledAddTimeSlotBtn>
+            <div>
+              <InputLabel id="edit-day-multiple-checkbox-label">Day</InputLabel>
+              <Select
+                labelId="edit-day-multiple-checkbox-label"
+                id="edit-day-multiple-checkbox"
+                multiple
+                value={edittimeslots?.day || [1,2,3,4,5]}
+                onChange={(e) => updateEditTimeslots('day', e.target.value)}
+                input={<OutlinedInput label="Tag" />}
+                renderValue={(selected) => selected?.sort()?.map((d) => getDayText(d))?.join(', ')}
+                sx={{width: '100%'}}
+              >
+                {[0,1,2,3,4,5,6].map((day) => (
+                  <MenuItem key={day} value={day}>
+                    <Checkbox checked={edittimeslots?.day?.indexOf(day) > -1} />
+                    <ListItemText primary={getDayText(day)} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <InputLabel id="edit-start-select-required-label">Start Time*</InputLabel>
+              <Select
+                labelId="edit-start-select-required-label"
+                id="edit-start-select-required"
+                value={edittimeslots?.start || '08:00'}
+                label="Start Time*"
+                onChange={(e) => updateEditTimeslots('start', e.target.value)}
+                sx={{width: '100%'}}
+              >
+                {renderTimeOptions()}
+              </Select>
+            </div>
+            <div>
+              <InputLabel id="edit-end-select-required-label">End Time*</InputLabel>
+              <Select
+                labelId="edit-end-select-required-label"
+                id="edit-end-select-required"
+                value={edittimeslots?.end || '18:00'}
+                label="End Time*"
+                onChange={(e) => updateEditTimeslots('end', e.target.value)}
+                sx={{width: '100%'}}
+              >
+                {renderTimeOptions()}
+              </Select>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button style={{margin: '30px 0'}}  variant="secondary" onClick={() => setEditModalShow(false)}>
@@ -305,61 +325,71 @@ function ConsultantView() {
           <div className="title">
           Time slots
           </div>
-          {timeslots.map((ts) => (
-            <div key={ts.id}>
-              <Form.Label>Duration</Form.Label>
-              <Form.Control required as="select" value={ts.duration} onChange={(e) => updateTimeslots(ts.id, 'duration', e.target.value)}>
-                <option value={10}>10 minutes</option>
-                <option value={15}>15 minutes</option>
-                <option value={20}>20 minutes</option>
-                <option value={30}>30 minutes</option>
-                <option value={60}>1 hour</option>
-              </Form.Control>
-              <Form.Label>Day</Form.Label>
-              <Form.Control required as="select" value={ts.day} onChange={(e) => updateTimeslots(ts.id, 'day', e.target.value)}>
-                <option value={Day.WD}>Weekdays</option>
-                <option value={Day.ALL}>All week</option>
-                <option value={Day.MON}>Monday</option>
-                <option value={Day.TUE}>Tuesday</option>
-                <option value={Day.WED}>Wednesday</option>
-                <option value={Day.THU}>Thursday</option>
-                <option value={Day.FRI}>Friday</option>
-                <option value={Day.SAT}>Saturday</option>
-                <option value={Day.SUN}>Sunday</option>
-              </Form.Control>
-              <Form.Label>Start time</Form.Label>
-              <Form.Control required as="select" value={ts.start} onChange={(e) => updateTimeslots(ts.id, 'start', e.target.value)}>
-                {range(7, 19).map((h) => (
-                  <>
-                    <option value={`${padStart(h, 2, '0')}:00`}>{`${padStart(h, 2, '0')}:00`}</option>
-                    <option value={`${padStart(h, 2, '0')}:15`}>{`${padStart(h, 2, '0')}:15`}</option>
-                    <option value={`${padStart(h, 2, '0')}:30`}>{`${padStart(h, 2, '0')}:30`}</option>
-                    <option value={`${padStart(h, 2, '0')}:45`}>{`${padStart(h, 2, '0')}:45`}</option>
-                  </>
-                ))}
-              </Form.Control>
-              <Form.Label>End time</Form.Label>
-              <Form.Control required as="select" value={ts.end} onChange={(e) => updateTimeslots(ts.id, 'end', e.target.value)}>
-                {range(7, 19).map((h) => (
-                  <>
-                    <option value={`${padStart(h, 2, '0')}:00`}>{`${padStart(h, 2, '0')}:00`}</option>
-                    <option value={`${padStart(h, 2, '0')}:15`}>{`${padStart(h, 2, '0')}:15`}</option>
-                    <option value={`${padStart(h, 2, '0')}:30`}>{`${padStart(h, 2, '0')}:30`}</option>
-                    <option value={`${padStart(h, 2, '0')}:45`}>{`${padStart(h, 2, '0')}:45`}</option>
-                  </>
-                ))}
-              </Form.Control>
-              <StyledDeleteTimeSlotBtn variant="danger" className="btn-fill" onClick={() => removeTimeslots(ts.id)}>
-                <FontAwesomeIcon color="white" icon={faMinusCircle} />
-                &nbsp; Delete slot
-              </StyledDeleteTimeSlotBtn>
-              <hr />
+          <div>
+            <div>
+              <InputLabel id="duration-select-required-label">Duration *</InputLabel>
+              <Select
+                labelId="duration-select-required-label"
+                id="duration-select-required"
+                value={timeslots?.duration || 15}
+                label="Duration *"
+                onChange={(e) => updateTimeslots('duration', e.target.value)}
+                sx={{width: '100%'}}
+              >
+                <MenuItem value={10}>10 minutes</MenuItem>
+                <MenuItem value={15}>15 minutes</MenuItem>
+                <MenuItem value={20}>20 minutes</MenuItem>
+                <MenuItem value={30}>30 minutes</MenuItem>
+                <MenuItem value={60}>1 hour</MenuItem>
+              </Select>
             </div>
-          ))}
-          <StyledAddTimeSlotBtn disabled={timeslots.length === 7} variant="info" className="btn-fill" onClick={() => addTimeslots()}>
-            <FontAwesomeIcon color="white" icon={faPlusCircle} />
-            &nbsp; Add new slot
-          </StyledAddTimeSlotBtn>
+            <div>
+              <InputLabel id="day-multiple-checkbox-label">Day</InputLabel>
+              <Select
+                labelId="day-multiple-checkbox-label"
+                id="day-multiple-checkbox"
+                multiple
+                value={timeslots?.day || [1,2,3,4,5]}
+                onChange={(e) => updateTimeslots('day', e.target.value)}
+                input={<OutlinedInput label="Tag" />}
+                renderValue={(selected) => selected?.sort()?.map((d) => getDayText(d))?.join(', ')}
+                sx={{width: '100%'}}
+              >
+                {[0,1,2,3,4,5,6].map((day) => (
+                  <MenuItem key={day} value={day}>
+                    <Checkbox checked={timeslots?.day?.indexOf(day) > -1} />
+                    <ListItemText primary={getDayText(day)} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <InputLabel id="start-select-required-label">Start Time*</InputLabel>
+              <Select
+                labelId="start-select-required-label"
+                id="start-select-required"
+                value={timeslots?.start || '08:00'}
+                label="Start Time*"
+                onChange={(e) => updateTimeslots('start', e.target.value)}
+                sx={{width: '100%'}}
+              >
+                {renderTimeOptions()}
+              </Select>
+            </div>
+            <div>
+              <InputLabel id="end-select-required-label">End Time*</InputLabel>
+              <Select
+                labelId="end-select-required-label"
+                id="end-select-required"
+                value={timeslots?.end || '18:00'}
+                label="End Time*"
+                onChange={(e) => updateTimeslots('end', e.target.value)}
+                sx={{width: '100%'}}
+              >
+                {renderTimeOptions()}
+              </Select>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button style={{margin: '30px 0'}}  variant="secondary" onClick={handleModalClose}>

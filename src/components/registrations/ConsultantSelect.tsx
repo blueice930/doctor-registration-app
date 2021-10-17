@@ -15,6 +15,7 @@ import { Consultant } from 'src/types/consultant';
 import { useForm } from 'src/contexts/FormContext';
 import { isEmpty } from 'lodash';
 import dayjs from 'dayjs';
+import { getTimeslots } from 'src/firebase';
 
 const useStyles = makeStyles({
   input: {
@@ -36,10 +37,11 @@ const ConsultantSelect = () => {
   const classes = useStyles();
   const { consultants } = useConsultant();
   const {
-    selectedConsultant, setSelectedConsultant, date, setdate, settime,
+    selectedConsultant, setSelectedConsultant, date, time, setdate, settime,
   } = useForm();
 
   const [loading, setLoading] = useState(false);
+  const [sessions, setsessions] = useState<string[]>([]);
 
   const getName = (id: string, CN = false) => {
     const temp = consultants.find((c: Consultant) => id === c.id);
@@ -56,18 +58,20 @@ const ConsultantSelect = () => {
   const disableDate = useCallback((day: Date) => {
     const timeslots = selectedConsultant?.timeslots;
     const d = day.getDay();
-    return !timeslots.includes(d);
+    return !timeslots?.day?.includes(d);
   }, [selectedConsultant]);
 
   const handleDateChange = async (newValue: Date | null) => {
     setLoading(true);
-    await setTimeout(() => {
-      setLoading(false);
-      setdate(dayjs(newValue).format('YYYY/MM/DD'));
-    }, 3000);
+    const newDate = dayjs(newValue).format('YYYY/MM/DD');
+    const res: any = await getTimeslots({
+      consultantId: selectedConsultant.id,
+      date: newDate,
+    });
+    setLoading(false);
+    setdate(newDate);
+    setsessions(res?.data?.data);
   };
-
-  console.log('date', date);
 
   return (
     <Container>
@@ -128,13 +132,15 @@ const ConsultantSelect = () => {
             <Select
               labelId="session-select-label"
               id="session-select"
-              value={10}
+              onChange={(e) => settime(e.target.value)}
               label="Session"
               sx={{ textAlign: 'left' }}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {sessions.map((s) => (
+                <MenuItem key={s} value={s}>
+                  {s} ({selectedConsultant?.timeslots?.duration} mins)
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         )}

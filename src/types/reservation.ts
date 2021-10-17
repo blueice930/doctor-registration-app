@@ -8,7 +8,6 @@ export interface Reservation {
   patientPhone: string,
   date: string,
   startTime: string,
-  endTime: string,
   duration: number,
   createdAt: number,
   updatedAt: number,

@@ -20,6 +20,7 @@ import React, { Component } from 'react';
 import { useLocation, Route, Switch } from 'react-router-dom';
 
 import { ConsultantProvider } from 'src/contexts/ConsultantContext';
+import { ReservationProvider } from 'src/contexts/ReservationContext';
 import AdminNavbar from '../components/Navbars/AdminNavbar';
 import Footer from '../components/Footer/Footer';
 import Sidebar from '../components/Sidebar/Sidebar';
@@ -67,7 +68,9 @@ function Admin() {
           <AdminNavbar />
           <div className="content">
             <ConsultantProvider>
-            <Switch>{getRoutes(dashboardRoutes)}</Switch>
+              <ReservationProvider>
+                <Switch>{getRoutes(dashboardRoutes)}</Switch>
+              </ReservationProvider>
             </ConsultantProvider>
           </div>
           <Footer />

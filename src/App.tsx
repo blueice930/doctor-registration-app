@@ -1,7 +1,8 @@
+import React, { useState } from 'react';
 import {
-  Box, Stepper, Step, StepLabel, Button,
+  Box, Stepper, Step, StepLabel, Button, Backdrop, CircularProgress,
 } from '@mui/material';
-import React from 'react';
+import { isEmpty } from 'lodash';
 import styled from 'styled-components';
 import ConsultantSelect from './components/registrations/ConsultantSelect';
 import Disclaimer from './components/registrations/Disclaimer';
@@ -9,6 +10,7 @@ import RegForm from './components/registrations/RegForm';
 import Thankyou from './components/registrations/Thankyou';
 import { ConsultantProvider } from './contexts/ConsultantContext';
 import { FormProvider, useForm } from './contexts/FormContext';
+import { createReservation } from './firebase';
 
 const Container = styled.div`
   margin: auto;
@@ -20,12 +22,34 @@ const Container = styled.div`
 const STEPS = ['Read Disclaimer', 'Select Health Consultant', 'Fill in Information'];
 
 const App = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const { isFormReady } = useForm();
+  const [activeStep, setActiveStep] = useState(0);
+  const [submitting, setsubmitting] = useState(false);
+  const {
+    isFormReady, date, time, selectedConsultant, patientName,
+    patientNameCN, patientMemberId, isFirstVisit, patientPhone,
+  } = useForm();
 
-  const handleNext = () => {
+  const isBtnDisabled = (activeStep === 2 && !isFormReady)
+  || (activeStep === 1 && !(selectedConsultant?.id && date && time));
+
+  const handleNext = async () => {
+    if (activeStep === 2) {
+      setsubmitting(true);
+      await createReservation({
+        consultantId: selectedConsultant?.id,
+        patientName,
+        patientNameCN,
+        patientMemberId,
+        isFirstVisit,
+        patientPhone,
+        date,
+        startTime: time,
+        duration: selectedConsultant?.timeslots?.duration,
+      });
+      setsubmitting(false);
+    }
     if (activeStep > 2) {
-      setActiveStep(0);
+      window.location.reload();
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -60,6 +84,12 @@ const App = () => {
 
   return (
     <Container>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={submitting}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <h2>Reservation</h2>
         <Box sx={{ width: '100%' }}>
           <Stepper activeStep={activeStep}>
@@ -81,7 +111,7 @@ const App = () => {
               <Button
                 variant="outlined"
                 color="inherit"
-                disabled={activeStep === 0}
+                disabled={activeStep === 0 || activeStep === 3}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
@@ -91,7 +121,7 @@ const App = () => {
               <Button
                 variant="contained"
                 onClick={handleNext}
-                disabled={activeStep === STEPS.length - 1 && !isFormReady}
+                disabled={isBtnDisabled}
               >
                 {getBtnText()}
               </Button>
