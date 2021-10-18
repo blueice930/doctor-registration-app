@@ -152,7 +152,6 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
           'Error getting documents', e?.message);
     }
   }
-  console.log(`reservations`, reservations);
 
   const response: FunctionResponse = {
     success: true,
@@ -171,7 +170,6 @@ const getTimeslotsFn = async (data: any, context: CallableContext) => {
       data: null,
     };
   }
-  console.log(`date`, date);
   const db = firestore();
   const consultantSnapshot = await db.collection('consultants')
       .doc(consultantId).get();
@@ -207,9 +205,6 @@ const getTimeslotsFn = async (data: any, context: CallableContext) => {
     availableSlots.push(`${padStart(startH.toString(), 2, '0')}:${padStart(startM.toString(), 2, '0')}`);
     startM += duration;
   }
-
-  console.log(`availableSlots`, availableSlots);
-  console.log(`occupiedSlots`, occupiedSlots);
 
   const result = availableSlots.filter((ts) => !occupiedSlots.includes(ts));
   const response: FunctionResponse = {
