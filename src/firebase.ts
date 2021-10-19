@@ -17,9 +17,10 @@ const functions = getFunctions(app, 'asia-southeast1');
 export const auth = getAuth(app);
 
 // local test purpose
-connectFunctionsEmulator(functions, 'localhost', 5001);
-connectAuthEmulator(auth, 'http://localhost:9099');
-///
+if (window.location.hostname === 'localhost') {
+  connectFunctionsEmulator(functions, 'localhost', 5001);
+  connectAuthEmulator(auth, 'http://localhost:9099');
+}
 
 const createReservation = httpsCallable(functions, 'reservation-createReservation');
 const updateReservation = httpsCallable(functions, 'reservation-updateReservation');
