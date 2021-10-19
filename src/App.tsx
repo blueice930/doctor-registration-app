@@ -20,7 +20,7 @@ const Container = styled.div`
 `;
 
 const App = () => {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [submitting, setsubmitting] = useState(false);
   const { t }: any = useLocale();
 
