@@ -15,7 +15,7 @@ import { useLocale } from './contexts/LocaleTempContext';
 
 const Container = styled.div`
   background-color: #b4b4b4;
-  min-height: 800px;
+  min-height: 1200px;
   height: 100vh;
 `;
 
