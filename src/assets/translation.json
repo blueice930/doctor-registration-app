@@ -6,6 +6,7 @@
     "refresh": "Refresh",
     "back": "Back",
     "date": "Date",
+    "time": "Time",
     "read_disclaimer": "Read disclaimer",
     "select_health_consultant": "Select health consultant",
     "health_consultant": "Health Consultant",
@@ -21,9 +22,13 @@
     "en_name": "English Name",
     "cn_name": "Chinese Name",
     "phone": "Phone",
-    "first_time": "Is it your first visit?",
+    "first_time_visit": "First time visit",
+    "is_first_time?": "Is it your first visit?",
     "consultation_number": "Health consultation number",
-    "member_id": "Member id (optional)"
+    "member_id": "Member id (optional)",
+    "thankyou": "Thank you!",
+    "thankyou_text": "Your reservation has been made successfully. Please arrive on time. If there is any change please inform us soon.",
+    "reservation_detail": "Reservation Detail:"
   },
   "cn": {
     "reservation": "预约",
@@ -32,6 +37,7 @@
     "refresh": "刷新",
     "back": "返回",
     "date": "日期",
+    "time": "时间",
     "read_disclaimer": "阅读条款及细则",
     "select_health_consultant": "选择健康咨询师",
     "fill_in_information": "填写资料",
@@ -47,8 +53,12 @@
     "en_name": "英文名",
     "cn_name": "中文名",
     "phone": "电话号",
-    "first_time": "您是第一次来健康咨询吗？",
+    "first_time_visit": "第一次来咨询",
+    "is_first_time?": "您是第一次来健康咨询吗？",
     "consultation_number": "健康咨询号",
-    "member_id": "会员号（选择项）"
+    "member_id": "会员号（选择项）",
+    "thankyou": "感谢预约",
+    "thankyou_text": "您已成功注册, 请准时到达,如果有任何改动请尽快联系我们.",
+    "reservation_detail": "预约详情:"
   }
 }

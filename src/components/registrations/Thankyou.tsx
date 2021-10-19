@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'src/contexts/FormContext';
 import {
   Paper, Table, TableBody, TableCell, TableContainer, TableRow,
 } from '@mui/material';
+import { useLocale } from 'src/contexts/LocaleTempContext';
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -37,15 +38,22 @@ const StyledContainer = styled.div`
 const StyledIcon = styled(FontAwesomeIcon)`
 `;
 
+const StyledTitleCell = styled(TableCell)`
+  width: 40%;
+`;
+
 const Thankyou = () => {
   const {
     selectedConsultant, patientName, patientNameCN,
     patientMemberId,
     isFirstVisit,
+    consultationNumber,
     patientPhone,
     date,
     time,
   } = useForm();
+
+  const { t }: any = useLocale();
   return (
     <StyledContainer>
       <div className="icon">
@@ -55,74 +63,84 @@ const Thankyou = () => {
           size="3x"
         />
       </div>
-      <div className="title">Thank you!</div>
-      <p className="text">Your reservation has been made successfully. Please arrive on time. If there is any change please inform us soon.</p>
-      <div className="subtitle">Reservation Detail:</div>
+      <div className="title">{t('thankyou')}</div>
+      <p className="text">{t('thankyou_text')}</p>
+      <div className="subtitle">{t('reservation_detail')}</div>
       <div className="detail">
         <TableContainer component={Paper} elevation={2}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableBody>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                Date:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('date')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {date}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                Time:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('time')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {time}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                English Name:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('en_name')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {patientName}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                Chinese Name:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('cn_name')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {patientNameCN}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                Phone:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('phone')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {patientPhone}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                Consultant:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('health_consultant')}:`}
+              </StyledTitleCell>
               <TableCell>
                 {selectedConsultant?.name}, {selectedConsultant?.nameCN}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>
-                First time visit:
-              </TableCell>
+              <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                {`${t('first_time_visit')}:`}
+              </StyledTitleCell>
               <TableCell>
-                {isFirstVisit ? 'Yes' : 'No'}
+                {isFirstVisit ? t('yes') : t('no')}
               </TableCell>
             </TableRow>
+            {!isFirstVisit && (
+              <TableRow>
+                <StyledTitleCell sx={{ fontWeight: 'bold' }}>
+                  Consultation Number:
+                </StyledTitleCell>
+                <TableCell>
+                  {consultationNumber || ''}
+                </TableCell>
+              </TableRow>
+            )}
             {patientMemberId && (
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>
+                <StyledTitleCell sx={{ fontWeight: 'bold' }}>
                   Member ID:
-                </TableCell>
+                </StyledTitleCell>
                 <TableCell>
                   {patientMemberId}
                 </TableCell>

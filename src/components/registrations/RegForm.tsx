@@ -40,8 +40,6 @@ const RegForm = () => {
     setpatientMemberId, setisFirstVisit, setpatientPhone,
   } = useForm();
 
-  console.log('isFirstVisit', isFirstVisit);
-
   return (
     <Container>
       <StyledTextField
@@ -70,7 +68,7 @@ const RegForm = () => {
         specialLabel={t('phone')}
       />
       <div className="label">
-        <Typography>{t('first_time')}</Typography>
+        <Typography>{t('is_first_time?')}</Typography>
         <RadioGroup
           row
           aria-label="first-time"
