@@ -16,16 +16,23 @@ export const LocaleProvider = ({ children }) => {
     return isCN ? translation.cn[key] || translation.en[key] || key : translation.en[key] || key;
   }, [isCN]);
 
+  const setLocale = () => {
+    localStorage.setItem('_reg_app_locale', !isCN);
+    setIsCN(!isCN);
+  }
+
   useEffect(() => {
-    const config = localStorage.getItem('_reg_app_config');
-    setIsCN(config?.isCN || true);
+    // read as string
+    const cache = localStorage.getItem('_reg_app_locale') === 'true';
+    setIsCN(cache);
   }, []);
 
+  console.log(`isCN`, isCN);
 
   const value = {
     isCN,
-    setIsCN,
     t,
+    setLocale
   };
 
   return <LocaleContext.Provider value={value}>

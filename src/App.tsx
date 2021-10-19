@@ -19,10 +19,16 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const App = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [submitting, setsubmitting] = useState(false);
-  const { t }: any = useLocale();
+  const { t, setLocale }: any = useLocale();
 
   const STEPS = [t('read_disclaimer'), t('select_health_consultant'), t('fill_in_information')];
 
@@ -93,7 +99,10 @@ const App = () => {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <h2>{t('reservation')}</h2>
+        <StyledHeader>
+          <h2>{t('reservation')}</h2>
+          <Button sx={{ height: '40px', borderRadius: '4px' }} onClick={setLocale}>中 | En</Button>
+        </StyledHeader>
         <Box sx={{ width: '100%' }}>
           <Stepper activeStep={activeStep}>
             {STEPS.map((label) => {
