@@ -13,10 +13,13 @@ export const FormProvider = ({ children } :any) => {
   const [patientPhone, setpatientPhone] = useState('');
   const [date, setdate] = useState('');
   const [time, settime] = useState('');
+  const [consultationNumber, setConsultationNumber] = useState('');
   const [isAppOn, setIsAppOn] = useState(true);
 
-  const isFormReady = (selectedConsultant?.id && patientName
-     && patientNameCN && patientPhone && date && time);
+  const isFormReady = () => (isFirstVisit ? (selectedConsultant?.id && patientName
+    && patientNameCN && patientPhone && date && time)
+    : (selectedConsultant?.id && patientName
+     && patientNameCN && patientPhone && date && time && consultationNumber));
 
   const value = {
     selectedConsultant,
@@ -36,6 +39,8 @@ export const FormProvider = ({ children } :any) => {
     time,
     settime,
     isFormReady,
+    consultationNumber,
+    setConsultationNumber,
     isAppOn,
     setIsAppOn,
   };

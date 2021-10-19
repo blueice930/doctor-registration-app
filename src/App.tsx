@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import {
   Box, Stepper, Step, StepLabel, Button, Backdrop, CircularProgress,
 } from '@mui/material';
-import { isEmpty } from 'lodash';
+
 import styled from 'styled-components';
 import ConsultantSelect from './components/registrations/ConsultantSelect';
 import Disclaimer from './components/registrations/Disclaimer';
 import RegForm from './components/registrations/RegForm';
 import Thankyou from './components/registrations/Thankyou';
-import { ConsultantProvider } from './contexts/ConsultantContext';
-import { FormProvider, useForm } from './contexts/FormContext';
+import { useForm } from './contexts/FormContext';
 import { createReservation } from './firebase';
+import { useLocale } from './contexts/LocaleTempContext';
 
 const Container = styled.div`
   margin: auto;
@@ -19,17 +19,19 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const STEPS = ['Read Disclaimer', 'Select Health Consultant', 'Fill in Information'];
-
 const App = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(2);
   const [submitting, setsubmitting] = useState(false);
+  const { t }: any = useLocale();
+
+  const STEPS = [t('read_disclaimer'), t('select_health_consultant'), t('fill_in_information')];
+
   const {
     isFormReady, date, time, selectedConsultant, patientName,
-    patientNameCN, patientMemberId, isFirstVisit, patientPhone,
+    patientNameCN, patientMemberId, isFirstVisit, patientPhone, consultationNumber,
   } = useForm();
 
-  const isBtnDisabled = (activeStep === 2 && !isFormReady)
+  const isBtnDisabled = (activeStep === 2 && !isFormReady())
   || (activeStep === 1 && !(selectedConsultant?.id && date && time));
 
   const handleNext = async () => {
@@ -45,6 +47,7 @@ const App = () => {
         date,
         startTime: time,
         duration: selectedConsultant?.timeslots?.duration,
+        consultationNumber,
       });
       setsubmitting(false);
     }
@@ -74,12 +77,12 @@ const App = () => {
 
   const getBtnText = () => {
     if (activeStep === STEPS.length - 1) {
-      return 'Finish';
+      return t('finish');
     }
     if (activeStep < STEPS.length - 1) {
-      return 'Next';
+      return t('next');
     }
-    return 'Refresh';
+    return t('refresh');
   };
 
   return (
@@ -90,7 +93,7 @@ const App = () => {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <h2>Reservation</h2>
+        <h2>{t('reservation')}</h2>
         <Box sx={{ width: '100%' }}>
           <Stepper activeStep={activeStep}>
             {STEPS.map((label) => {
@@ -115,7 +118,7 @@ const App = () => {
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
-                Back
+                {t('back')}
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button

@@ -16,6 +16,7 @@ import { useForm } from 'src/contexts/FormContext';
 import { isEmpty } from 'lodash';
 import dayjs from 'dayjs';
 import { getTimeslots } from 'src/firebase';
+import { useLocale } from 'src/contexts/LocaleTempContext';
 
 const useStyles = makeStyles({
   input: {
@@ -39,17 +40,20 @@ const ConsultantSelect = () => {
   const {
     selectedConsultant, setSelectedConsultant, date, time, setdate, settime,
   } = useForm();
+  const { t, isCN }: any = useLocale();
 
   const [loading, setLoading] = useState(false);
   const [sessions, setsessions] = useState<string[]>([]);
 
-  const getName = (id: string, CN = false) => {
+  const getName = (id: string) => {
     const temp = consultants.find((c: Consultant) => id === c.id);
-    return CN ? temp?.nameCN : temp?.name;
+    return isCN ? temp?.nameCN : temp?.name;
   };
 
   const handleChange = (e: any) => {
     const value = e?.target?.value;
+    setsessions([]);
+    setdate('');
     setSelectedConsultant(consultants.find((c: Consultant) => c.id === value));
   };
 
@@ -82,7 +86,7 @@ const ConsultantSelect = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <FormControl sx={{ m: 10, width: 400 }}>
-        <InputLabel id="consultant-chip-label">Health Consultant</InputLabel>
+        <InputLabel id="consultant-chip-label">{t('health_consultant')}</InputLabel>
         <Select
           labelId="consultant-chip-label"
           id="consultant-chip-select"
@@ -100,19 +104,19 @@ const ConsultantSelect = () => {
               key={c.id}
               value={c.id}
             >
-              {c.name}
+              {isCN ? c.nameCN : c.name}
             </MenuItem>
           ))}
           {consultants.length === 0 && (
             <MenuItem>
-              No available health consultants.
+              {t('no_available_consultant')}
             </MenuItem>
           )}
         </Select>
         { !isEmpty(selectedConsultant) && (
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <MobileDatePicker
-              label="Date"
+              label={t('date')}
               inputFormat="yyyy/MM/dd"
               minDate={currentDate}
               maxDate={add(currentDate, { months: 2 })}
@@ -128,17 +132,17 @@ const ConsultantSelect = () => {
         )}
         { !isEmpty(selectedConsultant) && date && (
           <FormControl>
-            <InputLabel id="session-select-label">Session</InputLabel>
+            <InputLabel id="session-select-label">{t('session')}</InputLabel>
             <Select
               labelId="session-select-label"
               id="session-select"
               onChange={(e) => settime(e.target.value)}
-              label="Session"
+              label={t('session')}
               sx={{ textAlign: 'left' }}
             >
               {sessions.map((s) => (
                 <MenuItem key={s} value={s}>
-                  {s} ({selectedConsultant?.timeslots?.duration} mins)
+                  {s} ({selectedConsultant?.timeslots?.duration}{t('min')})
                 </MenuItem>
               ))}
             </Select>

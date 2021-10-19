@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 import { useReservation } from "src/contexts/ReservationContext";
 import { deleteReservation, updateReservation } from "src/firebase";
+import { CSVLink } from 'react-csv';
 
 const StyledModal = styled(Modal)`
   .modal-dialog {
@@ -33,9 +34,30 @@ const StyledModal = styled(Modal)`
   }
 `;
 
+const StyledCsvBtn = styled(CSVLink)`
+  background-color: #87CB16;
+  padding: 8px 16px;
+  border-radius: .25rem;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: white;
+  transition: opacity .2s;
+
+  :hover {
+    color: white;
+    opacity: .8;
+  }
+  :visited {
+    color: white;
+  }
+  :focus {
+    color: white;
+  }
+`
+
 function TableList() {
   const {reservations, reload} = useReservation();
-
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [editModalShow, setEditModalShow] = useState(false);
@@ -48,6 +70,7 @@ function TableList() {
   const [startTime, setstartTime] = useState('');
   const [duration, setduration] = useState('');
   const [memberId, setmemberId] = useState('');
+  const [consultationNumber, setConsultationNumber] = useState('');
 
   const resetEditFields = () => {
     setEditId('');
@@ -59,12 +82,12 @@ function TableList() {
     setstartTime('');
     setduration(15);
     setmemberId('');
+    setConsultationNumber('');
     setUpdating(false);
     setEditModalShow(false);
   }
 
   const handleEdit = async (resUid) => {
-    console.log(`resUid`, resUid)
     try {
       setUpdating(true);
       const res = await updateReservation({
@@ -76,6 +99,7 @@ function TableList() {
         date,
         startTime,
         duration,
+        consultationNumber,
         patientMemberId: memberId,
       });
       await reload();
@@ -130,6 +154,8 @@ function TableList() {
           <Form.Control isInvalid={startTime === ""} value={startTime} onChange={(e) => setstartTime(e.target.value)} required type="text" placeholder="Enter Start Time" />
           <Form.Label>Duration</Form.Label>
           <Form.Control value={duration} onChange={(e) => setduration(e.target.value)} required type="number" placeholder="Enter Duration" />
+          <Form.Label>Health Consultation Number</Form.Label>
+          <Form.Control value={consultationNumber} onChange={(e) => setConsultationNumber(e.target.value)} required type="text" placeholder="Health consultation number" />
           <Form.Label>Member ID</Form.Label>
           <Form.Control value={memberId} onChange={(e) => setmemberId(e.target.value)} required type="text" placeholder="Enter Member ID" />
         </Modal.Body>
@@ -156,6 +182,7 @@ function TableList() {
                     <TableCell sx={{ fontWeight: 'bold' }}>Phone</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
                     <TableCell sx={{ fontWeight: 'bold' }}>Time</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Consultation Number</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -174,6 +201,7 @@ function TableList() {
                       <TableCell>{reser.patientPhone}</TableCell>
                       <TableCell>{reser.date}</TableCell>
                       <TableCell>{reser.startTime}</TableCell>
+                      <TableCell sx={{ textAlign: 'right' }}>{reser.consultationNumber}</TableCell>
                       <TableCell>
                         <Button
                           variant="info"
@@ -188,13 +216,14 @@ function TableList() {
                             setdate(temp?.date)
                             setstartTime(temp?.startTime)
                             setduration(temp?.duration)
+                            setConsultationNumber(temp?.consultationNumber)
                             setmemberId(temp?.patientMemberId)
                           }}
                         >
                           Edit
                         </Button>
                       </TableCell>
-                      <TableCell><Button className="btn-fill" variant="danger" onClick={() => handleDelete(reser.resUid)}>Delete</Button></TableCell>
+                      <TableCell><Button className="btn-fill" variant="success" onClick={() => handleDelete(reser.resUid)}>Delete</Button></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -202,6 +231,7 @@ function TableList() {
             </TableContainer>
           </Card.Body>
         </Card>
+        <StyledCsvBtn data={reservations}>Export as csv</StyledCsvBtn>
       </Container>
     </>
   );

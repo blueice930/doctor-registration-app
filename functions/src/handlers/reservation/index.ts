@@ -19,6 +19,7 @@ const createReservationFn = async (data: any, context: CallableContext) => {
   const date = data?.date;
   const startTime = data?.startTime;
   const duration = data?.duration;
+  const consultationNumber = data?.consultationNumber;
   const createdAt = firestore.Timestamp.now().toMillis();
 
   const reservation: Reservation = {
@@ -32,6 +33,7 @@ const createReservationFn = async (data: any, context: CallableContext) => {
     date,
     startTime,
     duration,
+    consultationNumber,
     createdAt,
     updatedAt: createdAt,
   };
@@ -61,6 +63,8 @@ const updateReservationFn = async (data: any, context: CallableContext) => {
   const patientNameCN = data?.patientNameCN;
   const patientMemberId = data?.patientMemberId || '';
   const patientPhone = data?.patientPhone;
+  const consultationNumber = data?.consultationNumber;
+  const duration = data?.duration;
   const date = data?.date;
   const startTime = data?.startTime;
   const updatedAt = firestore.Timestamp.now().toMillis();
@@ -74,6 +78,8 @@ const updateReservationFn = async (data: any, context: CallableContext) => {
     patientNameCN,
     patientMemberId,
     patientPhone,
+    duration,
+    consultationNumber,
     date,
     startTime,
     updatedAt,
@@ -141,6 +147,7 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
         date: data?.date,
         startTime: data?.startTime,
         duration: data?.duration,
+        consultationNumber: data?.consultationNumber,
         createdAt: data?.createdAt,
         updatedAt: data?.updatedAt,
       };

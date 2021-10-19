@@ -7,6 +7,7 @@ import {
 
 import styled from '@emotion/styled';
 import { useForm } from 'src/contexts/FormContext';
+import { useLocale } from 'src/contexts/LocaleTempContext';
 
 const Container = styled.div`
   display: flex;
@@ -33,9 +34,13 @@ const StyledTextField = styled(TextField)`
 `;
 
 const RegForm = () => {
+  const { t }: any = useLocale();
   const {
-    setpatientName, setpatientNameCN, setpatientMemberId, setisFirstVisit, setpatientPhone,
+    isFirstVisit, setpatientName, setpatientNameCN, setConsultationNumber,
+    setpatientMemberId, setisFirstVisit, setpatientPhone,
   } = useForm();
+
+  console.log('isFirstVisit', isFirstVisit);
 
   return (
     <Container>
@@ -43,7 +48,7 @@ const RegForm = () => {
         sx={{ width: 400 }}
         id="name"
         required
-        label="English Name"
+        label={t('en_name')}
         variant="outlined"
         onChange={(e: any) => setpatientName(e.target.value)}
       />
@@ -51,7 +56,7 @@ const RegForm = () => {
         sx={{ width: 400 }}
         id="name-cn"
         required
-        label="Chinese Name"
+        label={t('cn_name')}
         variant="outlined"
         onChange={(e: any) => setpatientNameCN(e.target.value)}
       />
@@ -62,24 +67,35 @@ const RegForm = () => {
         inputClass='phone-input'
         containerClass='phone-container'
         onChange={(phone) => setpatientPhone(phone)}
+        specialLabel={t('phone')}
       />
       <div className="label">
-        <Typography>Is it your first visit?</Typography>
+        <Typography>{t('first_time')}</Typography>
         <RadioGroup
           row
           aria-label="first-time"
-          defaultValue="yes"
+          value={isFirstVisit}
           name="radio-buttons-group"
-          onChange={(e: any) => setisFirstVisit(e.target.value)}
+          onChange={(e: any) => setisFirstVisit(e.target.value === 'true')}
           >
-          <FormControlLabel sx={{ mr: 15 }} value={true} control={<Radio />} label="Yes" />
-          <FormControlLabel value={false} control={<Radio />} label="No" />
+          <FormControlLabel sx={{ mr: 15 }} value={true} control={<Radio />} label={t('yes')} />
+          <FormControlLabel value={false} control={<Radio />} label={t('no')} />
         </RadioGroup>
       </div>
+      {!isFirstVisit && (
+        <StyledTextField
+          sx={{ width: 400 }}
+          id="consultation_number"
+          label={t('consultation_number')}
+          variant="outlined"
+          required
+          onChange={(e: any) => setConsultationNumber(e.target.value)}
+        />
+      )}
       <StyledTextField
         sx={{ width: 400 }}
         id="member-id"
-        label="Member Id (Optional)"
+        label={t('member_id')}
         variant="outlined"
         onChange={(e: any) => setpatientMemberId(e.target.value)}
       />
