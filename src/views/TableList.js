@@ -231,7 +231,12 @@ function TableList() {
             </TableContainer>
           </Card.Body>
         </Card>
-        <StyledCsvBtn data={reservations}>Export as csv</StyledCsvBtn>
+        <StyledCsvBtn
+          filename={"export.csv"}
+          data={reservations}
+        >
+          Export as csv
+        </StyledCsvBtn>
       </Container>
     </>
   );
