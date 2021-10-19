@@ -18,8 +18,8 @@ export const auth = getAuth(app);
 
 // local test purpose
 if (window.location.hostname === 'localhost') {
-  connectFunctionsEmulator(functions, 'localhost', 5001);
-  connectAuthEmulator(auth, 'http://localhost:9099');
+  // connectFunctionsEmulator(functions, 'localhost', 5001);
+  // connectAuthEmulator(auth, 'http://localhost:9099');
 }
 
 const createReservation = httpsCallable(functions, 'reservation-createReservation');

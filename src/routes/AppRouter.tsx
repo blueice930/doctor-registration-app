@@ -7,16 +7,19 @@ import { useAuth } from 'src/contexts/AuthContext';
 import AdminLayout from 'src/layouts/Admin';
 import { isEmpty } from 'lodash';
 import FormApp from 'src/FormApp';
+import styled from '@emotion/styled';
 import PageNotFound from '../pages/404';
 import PrivateRoute from './PrivateRoute';
 import Login from '../pages/Login';
 import Routes from './Routes';
 
+const StyledContainer = styled.div``;
+
 const AppRouter: FC = () => {
   const { currUser } = useAuth();
 
   return (
-    <div className="App">
+    <StyledContainer className="App">
       {/* <Navbar /> */}
       <Switch>
         <Route
@@ -39,7 +42,7 @@ const AppRouter: FC = () => {
 
         <Route component={PageNotFound} />
       </Switch>
-    </div>
+    </StyledContainer>
   );
 };
 

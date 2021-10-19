@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 
 import styled from 'styled-components';
+import Logo from 'src/assets/img/logo.png';
 import ConsultantSelect from './components/registrations/ConsultantSelect';
 import Disclaimer from './components/registrations/Disclaimer';
 import RegForm from './components/registrations/RegForm';
@@ -13,16 +14,55 @@ import { createReservation } from './firebase';
 import { useLocale } from './contexts/LocaleTempContext';
 
 const Container = styled.div`
+  background-color: #b4b4b4;
+  min-height: 800px;
+  height: 100vh;
+`;
+
+const InnerContainer = styled.div`
   margin: auto;
-  max-width: 640px;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  padding: 0 80px;
+  height: calc(100% - 120px);
 `;
 
 const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const TopBar = styled.div`
+  color: white;
+  padding: 8px 16px;
+  background-color: #343a40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-left: 20%;
+  height: 60px;
+  img {
+    height: 40px;
+    margin-right: 20px;
+  }
+`;
+
+const FooterBar = styled.div`
+  color: white;
+  padding: 8px 16px;
+  background-color: #343a40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-left: 20%;
+  height: 60px;
+  img {
+    height: 40px;
+    margin-right: 20px;
+  }
 `;
 
 const App = () => {
@@ -93,6 +133,11 @@ const App = () => {
 
   return (
     <Container>
+      <TopBar>
+        <img src={Logo} alt="logo" />
+          {t('global_ginseng')}
+      </TopBar>
+      <InnerContainer>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={submitting}
@@ -140,6 +185,9 @@ const App = () => {
             </Box>
           </React.Fragment>
         </Box>
+      </InnerContainer>
+      <FooterBar>
+      </FooterBar>
     </Container>
   );
 };
