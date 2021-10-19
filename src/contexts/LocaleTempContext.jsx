@@ -1,11 +1,9 @@
 import React, {
-  createContext, useCallback, useContext, useEffect, useMemo, useState,
+  createContext, useCallback, useContext, useEffect, useState,
 } from 'react';
 import translation from 'src/assets/translation.json';
 
 const LocaleContext = createContext({});
-
-const LOCALES = ['en', 'cn'];
 
 export const useLocale = () => useContext(LocaleContext);
 
@@ -26,8 +24,6 @@ export const LocaleProvider = ({ children }) => {
     const cache = localStorage.getItem('_reg_app_locale') === 'true';
     setIsCN(cache);
   }, []);
-
-  console.log(`isCN`, isCN);
 
   const value = {
     isCN,
