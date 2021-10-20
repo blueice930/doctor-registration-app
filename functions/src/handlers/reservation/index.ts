@@ -127,10 +127,10 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
   try {
     const cursorRef = cursor ?
     (await reservationRef.where('uid', '==', cursor).get()).docs[0] :
-    0;
+    firestore.Timestamp.now().toMillis();
 
     const reservationSnapshot = await reservationRef
-        .orderBy('createdAt', 'asc')
+        .orderBy('createdAt', 'desc')
         .startAfter(cursorRef)
         .limit(100)
         .get();
