@@ -223,7 +223,7 @@ function TableList() {
                           Edit
                         </Button>
                       </TableCell>
-                      <TableCell><Button className="btn-fill" variant="success" onClick={() => handleDelete(reser.resUid)}>Delete</Button></TableCell>
+                      <TableCell><Button className="btn-fill" variant="danger" onClick={() => handleDelete(reser.resUid)}>Delete</Button></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
