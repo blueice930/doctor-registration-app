@@ -301,12 +301,6 @@ const setConfigsFn = async (data: any, context: CallableContext) => {
 };
 
 const getConfigsFn = async (data: any, context: CallableContext) => {
-  if (!context.auth) {
-    // Throwing an HttpsError cause authentication failed.
-    throw new https.HttpsError('unauthenticated',
-        'You are currently unauthenticated', 'Action failed');
-  }
-
   const db = firestore();
   const configSnapshot = await db.collection('configs').doc('basic').get();
 
