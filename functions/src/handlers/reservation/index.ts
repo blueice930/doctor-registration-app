@@ -130,7 +130,7 @@ const getReservationsFn = async (data: any, context: CallableContext) => {
     0;
 
     const reservationSnapshot = await reservationRef
-        .orderBy('createdAt', 'asc')
+        .orderBy('createdAt', 'desc')
         .startAfter(cursorRef)
         .limit(100)
         .get();
