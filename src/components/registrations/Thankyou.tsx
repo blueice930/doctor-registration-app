@@ -129,7 +129,7 @@ const Thankyou = () => {
             {!isFirstVisit && (
               <TableRow>
                 <StyledTitleCell sx={{ fontWeight: 'bold' }}>
-                  Consultation Number:
+                {`${t('consultation_number')}:`}
                 </StyledTitleCell>
                 <TableCell>
                   {consultationNumber || ''}
