@@ -27,6 +27,9 @@ const updateReservation = httpsCallable(functions, 'reservation-updateReservatio
 const deleteReservation = httpsCallable(functions, 'reservation-deleteReservation');
 const getReservations = httpsCallable(functions, 'reservation-getReservations');
 const getTimeslots = httpsCallable(functions, 'reservation-getTimeslots');
+const setConfigs = httpsCallable(functions, 'reservation-setConfigs');
+const getConfigs = httpsCallable(functions, 'reservation-getConfigs');
+const getAppAvailability = httpsCallable(functions, 'reservation-getAppAvailability');
 
 const createConsultant = httpsCallable(functions, 'consultant-createConsultant');
 const getConsultants = httpsCallable(functions, 'consultant-getConsultants');
@@ -43,6 +46,9 @@ export {
   getConsultants,
   updateConsultant,
   deleteConsultant,
+  setConfigs,
+  getConfigs,
+  getAppAvailability,
 };
 
 export default app;

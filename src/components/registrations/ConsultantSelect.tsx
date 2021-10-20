@@ -38,12 +38,12 @@ const ConsultantSelect = () => {
   const classes = useStyles();
   const { consultants } = useConsultant();
   const {
-    selectedConsultant, setSelectedConsultant, date, time, setdate, settime,
+    selectedConsultant, setSelectedConsultant, date, time,
+    sessions, setdate, settime, setsessions,
   } = useForm();
   const { t, isCN }: any = useLocale();
 
   const [loading, setLoading] = useState(false);
-  const [sessions, setsessions] = useState<string[]>([]);
 
   const getName = (id: string) => {
     const temp = consultants.find((c: Consultant) => id === c.id);
@@ -138,9 +138,10 @@ const ConsultantSelect = () => {
               id="session-select"
               onChange={(e) => settime(e.target.value)}
               label={t('session')}
+              value={time}
               sx={{ textAlign: 'left' }}
             >
-              {sessions.map((s) => (
+              {sessions.map((s: any) => (
                 <MenuItem key={s} value={s}>
                   {s} ({selectedConsultant?.timeslots?.duration}{t('min')})
                 </MenuItem>

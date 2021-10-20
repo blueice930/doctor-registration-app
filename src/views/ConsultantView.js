@@ -50,7 +50,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const getDayText = (day) => {
+export const getDayText = (day) => {
   switch (day) {
     case 0:
       return 'Sun'

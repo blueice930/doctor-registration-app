@@ -8,6 +8,8 @@ import AdminLayout from 'src/layouts/Admin';
 import { isEmpty } from 'lodash';
 import FormApp from 'src/FormApp';
 import styled from '@emotion/styled';
+import NotAvailable from 'src/pages/NotAvailable';
+import Loading from 'src/components/Loading';
 import PageNotFound from '../pages/404';
 import PrivateRoute from './PrivateRoute';
 import Login from '../pages/Login';
@@ -16,16 +18,22 @@ import Routes from './Routes';
 const StyledContainer = styled.div``;
 
 const AppRouter: FC = () => {
-  const { currUser } = useAuth();
+  const { currUser, isAppOn, fetching } = useAuth();
+
+  const renderApp = () => {
+    if (fetching) {
+      return <Loading />;
+    }
+    return isAppOn ? <FormApp /> : <NotAvailable />;
+  };
 
   return (
     <StyledContainer className="App">
-      {/* <Navbar /> */}
       <Switch>
         <Route
           exact
           path={Routes.root}
-          component={FormApp}
+          render={renderApp}
         />
         <Route
           exact

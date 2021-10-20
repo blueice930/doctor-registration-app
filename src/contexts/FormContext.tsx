@@ -14,12 +14,30 @@ export const FormProvider = ({ children } :any) => {
   const [date, setdate] = useState('');
   const [time, settime] = useState('');
   const [consultationNumber, setConsultationNumber] = useState('');
-  const [isAppOn, setIsAppOn] = useState(true);
+  const [sessions, setsessions] = useState<string[]>([]);
 
   const isFormReady = () => (isFirstVisit ? (selectedConsultant?.id && patientName
     && patientNameCN && patientPhone && date && time)
     : (selectedConsultant?.id && patientName
      && patientNameCN && patientPhone && date && time && consultationNumber));
+
+  const resetForm = () => {
+    setSelectedConsultant({});
+    setpatientName('');
+    setpatientNameCN('');
+    setpatientMemberId('');
+    setisFirstVisit(true);
+    setpatientPhone('');
+    setdate('');
+    settime('');
+    setConsultationNumber('');
+  };
+
+  const resetConsultant = () => {
+    setSelectedConsultant({});
+    setdate('');
+    settime('');
+  };
 
   const value = {
     selectedConsultant,
@@ -41,8 +59,10 @@ export const FormProvider = ({ children } :any) => {
     isFormReady,
     consultationNumber,
     setConsultationNumber,
-    isAppOn,
-    setIsAppOn,
+    resetForm,
+    sessions,
+    setsessions,
+    resetConsultant,
   };
 
   return <FormContext.Provider value={value}>

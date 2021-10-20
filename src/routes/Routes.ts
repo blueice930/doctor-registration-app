@@ -15,6 +15,7 @@ const PrivateRoutes = {
 const PublicRoutes = {
   root: '/',
   login: '/admin/login',
+  notAvailable: '/not-available',
 };
 
 export const isPublicRoute = (path: string): boolean => (

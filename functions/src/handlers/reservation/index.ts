@@ -39,6 +39,57 @@ const createReservationFn = async (data: any, context: CallableContext) => {
   };
 
   const db = firestore();
+
+  const otherReservationRef = db.collection('reservations');
+  const otherReservationSnapshot = await otherReservationRef
+      .where('date', '==', date).get();
+
+  const occupiedSlots: string[] = [];
+  otherReservationSnapshot.forEach((reser) => {
+    occupiedSlots.push(reser.data().startTime);
+  });
+
+  if (occupiedSlots?.includes(startTime)) {
+    throw new https.HttpsError('cancelled',
+        'already-taken',
+        'Action failed');
+  }
+
+
+  // App not open ////////
+  const configSnapshot = await db.collection('configs').doc('basic').get();
+  const configs = configSnapshot.data();
+  const days = configs?.days || [];
+  const appStartTime = configs?.startTime || '';
+  const endTime = configs?.endTime || '';
+  const [startHStr, startMStr] = appStartTime?.split(':');
+  const startH = parseInt(startHStr);
+  const startM = parseInt(startMStr);
+  const [endHStr, endMStr] = endTime?.split(':');
+  const endH = parseInt(endHStr);
+  const endM = parseInt(endMStr);
+  const isAppOn = configs?.isAppOn;
+  const now = firestore.Timestamp.now().toDate();
+  const nowDay = now.getDay();
+  // GMT +8 Singapore time
+  const nowH = now.getHours() + 8;
+  const nowMin = now.getMinutes() + 8;
+  const isBetween = () => {
+    if (startH === endH && endH === nowH) {
+      return startM <= nowMin && nowMin <= endM;
+    }
+    if (nowH === startH) return nowMin >= startM;
+    if (nowH === endH) return nowMin <= endM;
+    return startH <= nowH && nowH <= endH;
+  };
+
+  if (!(isAppOn && days.includes(nowDay) && isBetween())) {
+    throw new https.HttpsError('cancelled',
+        'app-not-available',
+        'Action failed');
+  }
+  // end /////////
+
   const reservationRef = db.collection('reservations').doc(resUid);
   await reservationRef.set(reservation);
 
@@ -221,6 +272,91 @@ const getTimeslotsFn = async (data: any, context: CallableContext) => {
   return response;
 };
 
+const setConfigsFn = async (data: any, context: CallableContext) => {
+  if (!context.auth) {
+    // Throwing an HttpsError cause authentication failed.
+    throw new https.HttpsError('unauthenticated',
+        'You are currently unauthenticated', 'Action failed');
+  }
+  const days = data?.days || [0, 1, 2, 3, 4, 5, 6];
+  const startTime = data?.startTime || '09:00';
+  const endTime = data?.endTime || '18:00';
+  const isAppOn = data?.isAppOn;
+
+  const db = firestore();
+  const configRef = db.collection('configs').doc('basic');
+
+  await configRef.set({
+    days,
+    startTime,
+    endTime,
+    isAppOn,
+  }, {merge: true});
+
+  const response: FunctionResponse = {
+    success: true,
+    data: null,
+  };
+  return response;
+};
+
+const getConfigsFn = async (data: any, context: CallableContext) => {
+  if (!context.auth) {
+    // Throwing an HttpsError cause authentication failed.
+    throw new https.HttpsError('unauthenticated',
+        'You are currently unauthenticated', 'Action failed');
+  }
+
+  const db = firestore();
+  const configSnapshot = await db.collection('configs').doc('basic').get();
+
+  const response: FunctionResponse = {
+    success: true,
+    data: configSnapshot.data(),
+  };
+  return response;
+};
+
+const getAppAvailabilityFn = async (data: any, context: CallableContext) => {
+  const db = firestore();
+  const configSnapshot = await db.collection('configs').doc('basic').get();
+
+  const configs = configSnapshot.data();
+  const days = configs?.days || [];
+  const startTime = configs?.startTime || '';
+  const endTime = configs?.endTime || '';
+  const [startHStr, startMStr] = startTime?.split(':');
+  const startH = parseInt(startHStr);
+  const startM = parseInt(startMStr);
+  const [endHStr, endMStr] = endTime?.split(':');
+  const endH = parseInt(endHStr);
+  const endM = parseInt(endMStr);
+  const isAppOn = configs?.isAppOn;
+
+  if (!isAppOn) {
+    return false;
+  }
+
+  const now = firestore.Timestamp.now().toDate();
+  const nowDay = now.getDay();
+  // GMT +8 Singapore time
+  const nowH = now.getHours() + 8;
+  const nowMin = now.getMinutes() + 8;
+
+  const isBetween = () => {
+    if (startH === endH && endH === nowH) {
+      return startM <= nowMin && nowMin <= endM;
+    }
+    if (nowH === startH) return nowMin >= startM;
+    if (nowH === endH) return nowMin <= endM;
+    return startH <= nowH && nowH <= endH;
+  };
+
+  if (days.includes(nowDay) && isBetween() ) {
+    return true;
+  }
+  return false;
+};
 
 initFirebase();
 
@@ -229,6 +365,9 @@ const getReservations = functions.onCall(getReservationsFn);
 const updateReservation = functions.onCall(updateReservationFn);
 const deleteReservation = functions.onCall(deleteReservationFn);
 const getTimeslots = functions.onCall(getTimeslotsFn);
+const setConfigs = functions.onCall(setConfigsFn);
+const getConfigs = functions.onCall(getConfigsFn);
+const getAppAvailability = functions.onCall(getAppAvailabilityFn);
 
 export {
   createReservation,
@@ -236,4 +375,7 @@ export {
   updateReservation,
   deleteReservation,
   getTimeslots,
+  setConfigs,
+  getConfigs,
+  getAppAvailability,
 };

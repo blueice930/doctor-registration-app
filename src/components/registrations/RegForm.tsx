@@ -36,6 +36,7 @@ const StyledTextField = styled(TextField)`
 const RegForm = () => {
   const { t }: any = useLocale();
   const {
+    patientName, patientNameCN, patientPhone, consultationNumber, patientMemberId,
     isFirstVisit, setpatientName, setpatientNameCN, setConsultationNumber,
     setpatientMemberId, setisFirstVisit, setpatientPhone,
   } = useForm();
@@ -48,6 +49,7 @@ const RegForm = () => {
         required
         label={t('en_name')}
         variant="outlined"
+        value={patientName}
         onChange={(e: any) => setpatientName(e.target.value)}
       />
       <StyledTextField
@@ -56,6 +58,7 @@ const RegForm = () => {
         required
         label={t('cn_name')}
         variant="outlined"
+        value={patientNameCN}
         onChange={(e: any) => setpatientNameCN(e.target.value)}
       />
       <PhoneInput
@@ -63,6 +66,7 @@ const RegForm = () => {
         placeholder="Enter phone number"
         country='sg'
         inputClass='phone-input'
+        value={patientPhone}
         containerClass='phone-container'
         onChange={(phone) => setpatientPhone(phone)}
         specialLabel={t('phone')}
@@ -86,6 +90,7 @@ const RegForm = () => {
           id="consultation_number"
           label={t('consultation_number')}
           variant="outlined"
+          value={consultationNumber}
           required
           onChange={(e: any) => setConsultationNumber(e.target.value)}
         />
@@ -94,6 +99,7 @@ const RegForm = () => {
         sx={{ width: 400 }}
         id="member-id"
         label={t('member_id')}
+        value={patientMemberId}
         variant="outlined"
         onChange={(e: any) => setpatientMemberId(e.target.value)}
       />
