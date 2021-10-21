@@ -95,7 +95,9 @@ const NotAvailable = () => {
         <Typography paragraph sx={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>
           {t('app-not-available')}
         </Typography>
-        <Typography sx={{ fontSize: '20px', color: '#888', lineHeight: '2', textAlign: 'center' }}>
+        <Typography sx={{
+          fontSize: '20px', color: '#888', lineHeight: '2', textAlign: 'center',
+        }}>
           {t('app_available_at')}
           <br />
           {appStartDays.map((d: any) => t(getAvailableTime(d)))?.join(', ')}
