@@ -37,8 +37,8 @@
     "thankyou": "Thank you!",
     "thankyou_text": "Your reservation has been made successfully. Please arrive on time. If there is any change please inform us soon.",
     "reservation_detail": "Reservation Detail:",
-    "app-not-available": "App Not Available Now",
-    "app_available_at": "App available during:",
+    "app-not-available": "The reservation system is not available now",
+    "app_available_at": "System available during:",
     "already-taken": "This slot is already taken by others. Please select another time."
   },
   "cn": {
@@ -79,8 +79,8 @@
     "thankyou": "感谢预约",
     "thankyou_text": "您已成功注册, 请准时到达,如果有任何改动请尽快联系我们.",
     "reservation_detail": "预约详情:",
-    "app-not-available": "应用暂未开放",
-    "app_available_at": "应用开放时间:",
+    "app-not-available": "预约系统暂未开放",
+    "app_available_at": "预约系统开放时间:",
     "already-taken": "此时间段已被预订, 请重新选择时间段!"
   }
 }

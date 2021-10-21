@@ -9,7 +9,7 @@ export const FormProvider = ({ children } :any) => {
   const [patientName, setpatientName] = useState('');
   const [patientNameCN, setpatientNameCN] = useState('');
   const [patientMemberId, setpatientMemberId] = useState('');
-  const [isFirstVisit, setisFirstVisit] = useState(true);
+  const [isFirstVisit, setisFirstVisit] = useState(false);
   const [patientPhone, setpatientPhone] = useState('');
   const [date, setdate] = useState('');
   const [time, settime] = useState('');
@@ -26,7 +26,7 @@ export const FormProvider = ({ children } :any) => {
     setpatientName('');
     setpatientNameCN('');
     setpatientMemberId('');
-    setisFirstVisit(true);
+    setisFirstVisit(false);
     setpatientPhone('');
     setdate('');
     settime('');

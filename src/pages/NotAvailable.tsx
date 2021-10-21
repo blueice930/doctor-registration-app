@@ -46,13 +46,20 @@ const InnerContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
-  padding: 80px;
+  padding: 20px 80px;
   height: calc(100% - 120px);
+
+  .locale-btn {
+    display: flex;
+    justify-content: right;
+    width: 100%;
+  }
 `;
 
 const NotAvailable = () => {
   const { t }: any = useLocale();
   const { appStartDays, appStartTime, appEndTime } = useAuth();
+  const { setLocale }: any = useLocale();
 
   const getAvailableTime = (d: number) => {
     switch (d) {
@@ -82,7 +89,10 @@ const NotAvailable = () => {
           {t('global_ginseng')}
       </TopBar>
       <InnerContainer>
-        <Typography paragraph sx={{ fontWeight: 'bold', fontSize: '30px' }}>
+        <div className="locale-btn">
+          <Button sx={{ height: '40px', borderRadius: '4px', right: 0 }} onClick={setLocale}>中 | En</Button>
+        </div>
+        <Typography paragraph sx={{ fontWeight: 'bold', fontSize: '30px', textAlign: 'center' }}>
           {t('app-not-available')}
         </Typography>
         <Typography sx={{ fontSize: '20px', color: '#888', lineHeight: '2' }}>
