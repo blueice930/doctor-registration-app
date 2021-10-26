@@ -12,7 +12,7 @@ export const ReservationProvider = ({ children } :any) => {
   const [reservations, setReservations] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const getConsultantsFnCall = useCallback(async () => {
+  const getReservationsFnCall = useCallback(async () => {
     try {
       const { data }: { data: any } = await getReservations();
       const { data: consulData } = data;
@@ -24,13 +24,13 @@ export const ReservationProvider = ({ children } :any) => {
   }, []);
 
   useEffect(() => {
-    getConsultantsFnCall();
+    getReservationsFnCall();
   }, []);
 
   const value = {
     reservations,
     loading,
-    reload: getConsultantsFnCall,
+    reload: getReservationsFnCall,
   };
 
   return <ReservationContext.Provider value={value}>
