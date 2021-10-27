@@ -119,7 +119,7 @@ const ConsultantSelect = () => {
               label={t('date')}
               inputFormat="yyyy/MM/dd"
               minDate={currentDate}
-              maxDate={add(currentDate, { months: 2 })}
+              maxDate={add(currentDate, { weeks: 1 })}
               shouldDisableDate={disableDate}
               value={date}
               defaultCalendarMonth={currentDate}
