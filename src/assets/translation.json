@@ -39,7 +39,8 @@
     "reservation_detail": "Reservation Detail:",
     "app-not-available": "The reservation system is not available now",
     "app_available_at": "System available during:",
-    "already-taken": "This slot is already taken by others. Please select another time."
+    "already-taken": "This slot is already taken by others. Please select another time.",
+    "already-reserved": "You have already made reservation on that day. Please select another day."
   },
   "cn": {
     "reservation": "预约",
@@ -81,6 +82,7 @@
     "reservation_detail": "预约详情:",
     "app-not-available": "预约系统暂未开放",
     "app_available_at": "预约系统开放时间:",
-    "already-taken": "此时间段已被预订, 请重新选择时间段!"
+    "already-taken": "此时间段已被预订, 请重新选择时间段!",
+    "already-reserved": "您于此日期已完成预约, 请选择一个新的日期!"
   }
 }

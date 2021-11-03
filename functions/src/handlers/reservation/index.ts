@@ -45,9 +45,15 @@ const createReservationFn = async (data: any, context: CallableContext) => {
       .where('date', '==', date).get();
 
   const occupiedSlots: string[] = [];
+  let hasAlreadyReserved = false;
   otherReservationSnapshot.forEach((reser) => {
-    occupiedSlots.push(reser.data().startTime);
+    const reserData = reser.data();
+    if (reserData?.patientPhone === patientPhone) {
+      hasAlreadyReserved = true;
+    }
+    occupiedSlots.push(reserData?.startTime);
   });
+
 
   if (occupiedSlots?.includes(startTime)) {
     throw new https.HttpsError('cancelled',
@@ -55,6 +61,11 @@ const createReservationFn = async (data: any, context: CallableContext) => {
         'Action failed');
   }
 
+  if (hasAlreadyReserved) {
+    throw new https.HttpsError('cancelled',
+        'already-reserved',
+        'Action failed');
+  }
 
   // App not open ////////
   const configSnapshot = await db.collection('configs').doc('basic').get();
